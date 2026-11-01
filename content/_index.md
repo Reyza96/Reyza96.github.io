@@ -40,6 +40,7 @@ sections:
     design:
       view: citation
   - block: collection
+    id: working-papers
     content:
       title: Working Papers
       text: ''
@@ -50,6 +51,7 @@ sections:
     design:
       view: citation
   - block: collection
+    id: reports
     content:
       title: Reports
       text: ''
