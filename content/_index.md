@@ -36,7 +36,7 @@ sections:
       filters:
         folders:
           - publications
-        featured_only: true
+        publication_type: article-journal
     design:
       view: citation
   - block: collection
@@ -47,7 +47,7 @@ sections:
       filters:
         folders:
           - publications
-        exclude_featured: false
+        publication_type: article
     design:
       view: citation
   - block: collection
@@ -58,7 +58,7 @@ sections:
       filters:
         folders:
           - publications
-        exclude_featured: false
+        publication_type: report
     design:
       view: citation
   - block: cta-card
