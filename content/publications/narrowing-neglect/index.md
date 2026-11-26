@@ -1,5 +1,5 @@
 ---
-title: "Narrowing Neglect: How a Change in the Legal Definition of Child Neglect Cut Foster Care Removals in Texas"
+title: "Narrowing Neglect: How Redefining Child Neglect Cut Foster Care Removals in Texas"
 authors:
   - me
 date: "2026-11-01"
