@@ -1,0 +1,131 @@
+{{- /*
+  Custom homepage in the style of an economics faculty page.
+  Content comes from data/authors/me.yaml and content/publications/.
+*/ -}}
+{{- $me := hugo.Data.authors.me -}}
+{{- $name := $me.name.display -}}
+{{- $affil := index $me.affiliations 0 -}}
+{{- $pubs := where (where site.RegularPages "Section" "publications") "Params.publication_types" "!=" nil -}}
+{{- $sections := slice
+  (dict "id" "publications" "title" "Publications" "type" "article-journal")
+  (dict "id" "working-papers" "title" "Working Papers" "type" "article")
+  (dict "id" "reports" "title" "Reports" "type" "report")
+-}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ $name }}</title>
+<meta name="description" content="{{ $name }}, {{ $me.role }}, {{ $affil.name }}. Research on child protection, foster care and early childhood education.">
+<link rel="canonical" href="{{ site.BaseURL }}">
+<style>
+  :root { --text:#1a1a1a; --muted:#5f5f5f; --rule:#dcdcdc; --link:#1f3a6b; }
+  * { box-sizing:border-box; }
+  body { margin:0; color:var(--text); background:#fff;
+    font-family:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+    font-size:17px; line-height:1.55; }
+  main { max-width:760px; margin:0 auto; padding:56px 24px 72px; }
+  a { color:var(--link); text-decoration:none; }
+  a:hover { text-decoration:underline; }
+  header.top { display:flex; gap:32px; align-items:center; }
+  header.top img { width:150px; height:150px; object-fit:cover; border-radius:4px; flex:none; }
+  h1 { font-size:2.1rem; font-weight:normal; margin:0 0 6px; letter-spacing:.01em; }
+  .role { margin:0; }
+  .contact { margin:10px 0 0; color:var(--muted); font-size:.95rem; }
+  .contact a { margin-right:14px; }
+  .bio { margin:32px 0 0; }
+  .interests { color:var(--muted); font-size:.95rem; margin:10px 0 0; }
+  h2 { font-size:1.05rem; font-weight:normal; text-transform:uppercase; letter-spacing:.12em;
+    border-bottom:1px solid var(--rule); padding-bottom:6px; margin:48px 0 18px; }
+  .paper { margin:0 0 20px; }
+  .paper .title { font-weight:bold; }
+  .paper .meta { color:var(--muted); font-size:.95rem; }
+  .paper .venue { font-style:italic; }
+  .paper .links { font-size:.9rem; margin-top:2px; }
+  .paper .links a, .paper summary { margin-right:12px; }
+  details { display:inline-block; vertical-align:top; }
+  summary { display:inline; cursor:pointer; color:var(--link); list-style:none; }
+  summary::-webkit-details-marker { display:none; }
+  details[open] { display:block; }
+  .abstract { font-size:.95rem; margin:8px 0 4px; padding-left:14px; border-left:2px solid var(--rule); }
+  footer { color:var(--muted); font-size:.85rem; margin-top:56px; border-top:1px solid var(--rule); padding-top:12px; }
+  @media (max-width:560px) {
+    header.top { flex-direction:column; align-items:flex-start; gap:18px; }
+    main { padding-top:32px; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header class="top">
+    {{- with resources.Get "media/authors/me.jpg" }}
+    {{- $img := .Fill "300x300 Center q85" }}
+    <img src="{{ $img.RelPermalink }}" alt="{{ $name }}">
+    {{- end }}
+    <div>
+      <h1>{{ $name }}</h1>
+      <p class="role">{{ $me.role }}<br><a href="{{ $affil.url }}">{{ $affil.name }}</a></p>
+      <p class="contact">
+        <a href="{{ "uploads/resume.pdf" | relURL }}">CV</a>
+        {{- range $me.links }}
+          {{- $label := .label | default "" -}}
+          {{- if strings.Contains .url "mailto:" }}{{ $label = replace .url "mailto:" "" }}{{ end -}}
+          {{- if strings.Contains .url "scholar.google" }}{{ $label = "Google Scholar" }}{{ end -}}
+          {{- if strings.Contains .url "orcid" }}{{ $label = "ORCID" }}{{ end -}}
+          {{- if strings.Contains .url "linkedin" }}{{ $label = "LinkedIn" }}{{ end }}
+        <a href="{{ .url }}">{{ $label }}</a>
+        {{- end }}
+      </p>
+    </div>
+  </header>
+
+  <section class="bio">
+    {{ $me.bio | markdownify }}
+    {{- with $me.interests }}
+    <p class="interests">Research interests: {{ delimit . ", " }}</p>
+    {{- end }}
+  </section>
+
+  {{- range $sections }}
+  {{- $type := .type }}
+  {{- $items := slice }}
+  {{- range $pubs }}{{ if in .Params.publication_types $type }}{{ $items = $items | append . }}{{ end }}{{ end }}
+  {{- if $items }}
+  <section id="{{ .id }}">
+    <h2>{{ .title }}</h2>
+    {{- range sort $items "Date" "desc" }}
+    {{- $p := . }}
+    {{- $coauthors := slice }}
+    {{- range .Params.authors }}{{ if ne . "me" }}{{ $coauthors = $coauthors | append . }}{{ end }}{{ end }}
+    {{- $main := "" }}
+    {{- range .Params.links }}{{ if and (not $main) (in (slice "pdf" "site" "preprint") .type) }}{{ $main = .url }}{{ end }}{{ if and (not $main) (eq .type "doi") }}{{ $main = printf "https://doi.org/%s" .id }}{{ end }}{{ end }}
+    <div class="paper">
+      <div class="title">{{ if $main }}<a href="{{ $main }}">{{ .Title }}</a>{{ else }}{{ .Title }}{{ end }}</div>
+      <div class="meta">
+        {{- with $coauthors }}with {{ delimit . ", " " and " }}{{ end }}
+        {{- with .Params.publication }}{{ if $coauthors }}. {{ end }}<span class="venue">{{ .name }}</span>{{ with .volume }}, {{ . }}{{ end }}{{ with $p.Params.publication.issue }}({{ . }}){{ end }}{{ with $p.Params.publication.pages }}, {{ . }}{{ end }}{{ end }}
+        {{- if and .Params.publication (not .Date.IsZero) }}, {{ .Date.Format "2006" }}{{ end }}
+      </div>
+      {{- if or .Params.abstract .Params.links }}
+      <div class="links">
+        {{- with .Params.abstract }}
+        <details><summary>Abstract</summary><div class="abstract">{{ . }}</div></details>
+        {{- end }}
+        {{- range .Params.links }}
+          {{- if eq .type "doi" }}<a href="https://doi.org/{{ .id }}">DOI</a>
+          {{- else if eq .type "pdf" }}<a href="{{ .url }}">PDF</a>
+          {{- else }}<a href="{{ .url }}">{{ .label | default .type }}</a>{{ end }}
+        {{- end }}
+      </div>
+      {{- end }}
+    </div>
+    {{- end }}
+  </section>
+  {{- end }}
+  {{- end }}
+
+  <footer>Last updated {{ now.Format "January 2006" }}</footer>
+</main>
+</body>
+</html>
