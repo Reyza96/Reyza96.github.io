@@ -16,8 +16,8 @@ role: Research Assistant
 bio: |
   Hi! I am a Research Assistant at Pontificia Universidad Católica de Chile (PUC). I'm also currently teaching an undergrad course and working 
   as a TA at PUC's MPP program.  I hold a Master’s in Data, Economics, and Design of Policy from MIT and a Professional degree in Industrial
-  Engineering with a minor in Information Technologies from PUC. I am interested in development and labor economics. My current work examines the 
-  impact of early childhood education and foster care.
+  Engineering with a major in Information Technologies from PUC. I am interested in labor, public and development economics. My current work examines the 
+  impact of early childhood interventions, and I've also done work on unconditional cash transfers and disability insurance.
 
 affiliations:
   - name: Pontificia Universidad Católica de Chile (PUC)
@@ -35,16 +35,17 @@ links:
     url: https://orcid.org/my-orcid?orcid=0009-0001-3284-0704
 
 interests:
+  - Labor Economics
+  - Public Economics
   - Development Economics
   - Impact Evaluation
-  - Early Childhood Education
 
 education:
   - degree: Master’s in Data, Economics, and Design of Policy
     institution: MIT
     start: 2024-02-01
-    end: 2024-09-01
-  - degree: Professional degree in Industrial Engineering with a Minor in Information Technologies
+    end: 2024-09-19
+  - degree: Professional degree in Industrial Engineering with a Major in Information Technologies
     institution: PUC
     start: 2015-03-03
-    end: 2021-06-30
+    end: 2021-09-09
